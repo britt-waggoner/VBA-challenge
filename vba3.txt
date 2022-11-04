@@ -1,0 +1,71 @@
+Attribute VB_Name = "Module1"
+
+
+Sub stock_data()
+
+'Could not get code to run
+
+'Dim ws As Worksheet
+'Dim starting_ws As Worksheet
+Set starting_ws = ActiveSheet
+On Error Resume Next
+Dim totalvol As Double
+Dim percent_change As Double
+Dim yearly_change As Double
+
+
+For Each ws In ThisWorkbook.Worksheets
+ws.Cells(1, 9).Value = "Ticker"
+ws.Cells(1, 10).Value = "Yearly Change"
+ws.Cells(1, 11).Value = "Percent Change"
+ws.Cells(1, 12).Value = "Total Stock Volume"
+
+totalvol = 0
+summary_table_row = 2
+'totalrows = Cells(Rows.Count, "A").End(xlUp).Row
+
+For i = 2 To ws.Cells(Rows.Count, "A").End(xlUp).Row
+
+    If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+        ticker = ws.Cells(i, 1).Value
+        vol = ws.Cells(i, 7).Value
+        year_open = ws.Cells(i, 3).Value
+        year_close = ws.Cells(i, 6).Value
+        yearly_change = year_close - year_open
+        totalvol = totalvol + vol
+    
+    If year_open = 0 Then
+    percent_change = 0
+    Else
+    percent_change = (yearly_change / year_open) * 100
+    End If
+    
+    If ws.Cells(i, 10).Value > 0 Then
+         ws.Cells(i, 10).Interior.ColorIndex = 4
+    ElseIf ws.Cells(i, 10).Value < 0 Then
+                ws.Cells(i, 10).Interior.ColorIndex = 3
+    Else
+                ws.Cells(i, 10).Interior.ColorIndex = 2
+    End If
+    
+    ws.Cells(summary_table_row, 9).Value = ticker
+    ws.Cells(summary_table_row, 10).Value = yearly_change
+    ws.Cells(summary_table_row, 11).Value = percent_change
+    ws.Cells(summary_table_row, 12).Value = totalvol
+    
+    
+    Else
+        
+    yearly_change = year_close - year_open
+     totalvol = totalvol + vol
+      totalvol = 0
+     summary_table_row = summary_table_row + 1
+    
+    End If
+        Next i
+
+    Next ws
+
+End Sub
+
+
